@@ -1,4 +1,4 @@
-=Billettskriver=
+# Billettskriver
 
 Dette prosjektet er en del av billettsystemet til UKA på Blindern, se https://github.com/blindernuka/billett,
 og har til formål å fungere som en utskriftsserver for billettsystemet.
@@ -11,16 +11,16 @@ Idéen med dette prosjektet er å ha en Raspberry Pi som er koblet til kvitterin
 til billettsystemet for å skrive ut PDF-er. Når man da ønsker å skrive ut billetter, vil alt skje gjennom
 billettsystemet, hvor man velger hvilken Raspberry Pi som skal behandle utskriften.
 
-==Krav==
+## Krav
 * Billettsystemet må kunne opprette tilkobling direkte mot Raspberry Pi-en
 
-==Samkobling med billettsystemet==
+## Samkobling med billettsystemet
 * Dette systemet sender "ping" til billettsystemet for å annonsere seg selv
 * Billettsystemet sender PDF-er til dette systemet som automatisk blir skrevet ut
 
-==Oppsett av Raspberry Pi==
+## Oppsett av Raspberry Pi
 Installer CUPS:
 * `sudo apt-get install cups`
 
 Installer driver for skriveren:
-* Se https://github.com/blindernuka/billett/issues/50 for
+* Se [sewoocupsinstall_arm](sewoocupsinstall_arm)-mappen
