@@ -1,0 +1,22 @@
+#!/bin/sh
+
+echo "SEWOO TECH"
+echo "SEWOO TECH CUPS Driver 1.0.0 Removing Start"
+echo "---------------------------------------"
+echo ""
+
+if [ -e /usr/lib/cups/filter/rastertosewoo ]
+then 
+	echo "Removing rastertosewoo"
+	rm -f /usr/lib/cups/filter/rastertosewoo
+fi
+
+if [ -d /usr/share/cups/model/SEWOO ]
+then
+	echo "Removing dir .../cups/model/SEWOO"
+	rm -rf /usr/share/cups/model/SEWOO
+fi
+
+echo "Removing Complete!!!"
+echo ""
+

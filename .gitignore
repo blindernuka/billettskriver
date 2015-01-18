@@ -1,0 +1,7 @@
+# IDEA-project-files
+.idea/
+*.iml
+
+# Dependencies from package manager
+/bower_components/
+/node_modules/
