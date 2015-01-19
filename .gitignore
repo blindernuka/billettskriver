@@ -5,3 +5,5 @@
 # Dependencies from package manager
 /bower_components/
 /node_modules/
+
+/app/node_modules/
