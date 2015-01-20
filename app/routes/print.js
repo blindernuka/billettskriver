@@ -11,6 +11,11 @@ router.post('/', function(req, res, next) {
     return;
   }
 
+  if (req.body.key !== req.app.get('SECRETKEY')) {
+    res.status(401).send('Missing key');
+    return;
+  }
+
   checkQueue();
 
   function checkQueue() {

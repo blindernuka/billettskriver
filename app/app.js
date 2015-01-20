@@ -8,6 +8,7 @@ var multer = require('multer');
 var os = require('os');
 var http = require('http');
 var fs = require('fs');
+var crypto = require('crypto');
 
 var routes = require('./routes/index');
 var print = require('./routes/print');
@@ -21,6 +22,9 @@ if (!fs.existsSync('PRINTERNAME')) {
 }
 
 app.set('PRINTERNAME', fs.readFileSync('PRINTERNAME', {encoding: 'utf8'}).trim().split('\n')[0]);
+
+// generate a random key which is announce to the server
+app.set('SECRETKEY', crypto.randomBytes(30).toString('hex'));
 
 // tell the user which IPs we have
 var ips = getIps();
@@ -106,7 +110,8 @@ function announcePrinter() {
 
     req.write(JSON.stringify({
         name: app.get('PRINTERNAME'),
-        ips: getIps()
+        ips: getIps(),
+        key: app.get('SECRETKEY')
     }));
 
     req.on('error', function (e) {
