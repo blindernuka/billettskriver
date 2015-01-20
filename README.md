@@ -29,7 +29,7 @@ Installer driver for skriveren:
 
 Sett opp printeren i CUPS. Den må ha navn `SEWOO_LKT_Series`.
 
-Installer NodeJS:
+Installer NodeJS og nødvendige globale pakker:
 * Finn ut fil for siste versjon for 'arm-pi' fra http://nodejs.org/dist/
 ```
 $ mkdir /opt/node
@@ -38,6 +38,7 @@ $ wget http://nodejs.org/dist/v0.11.12/node-v0.11.12-linux-arm-pi.tar.gz     (NB
 $ tar zxf node-v0.11.12-linux-arm-pi.tar.gz --strip 1
 $ ln -s /opt/node/bin/node /usr/local/bin/node
 $ ln -s /opt/node/bin/npm /usr/local/bin/npm
+$ npm install -g forever
 ```
 
 Vi bruker OpenVPN for å sikre at man kan koble seg til systemet dersom det er på en LAN.
@@ -59,7 +60,18 @@ $ npm install
 $ echo 'bytt-meg-ut' >PRINTERNAME
 ```
 
-### Kjøring
+### Kjøring i testmodus
 ```
 $ npm start
+```
+
+### Kjøring ved oppstart
+```
+$ crontab -u pi -e
+```
+
+add
+
+```
+@reboot /home/pi/billettskriver/runapp.sh
 ```
