@@ -35,7 +35,7 @@ ips.forEach(function (ip) {
 });
 
 // announce ourselves to the server
-setInterval(announcePrinter, 30000);
+setInterval(announcePrinter, 20000);
 announcePrinter();
 
 // view engine setup
