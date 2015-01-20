@@ -111,6 +111,7 @@ function announcePrinter() {
     req.write(JSON.stringify({
         name: app.get('PRINTERNAME'),
         ips: getIps(),
+        port: app.get('port'),
         key: app.get('SECRETKEY')
     }));
 
