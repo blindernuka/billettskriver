@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var os = require('os');
-var http = require('http');
+var https = require('https');
 var fs = require('fs');
 var crypto = require('crypto');
 
@@ -21,10 +21,12 @@ if (!fs.existsSync('PRINTERNAME')) {
     process.exit(1);
 }
 
+var isDev = app.get('env') === 'development';
+
 app.set('PRINTERNAME', fs.readFileSync('PRINTERNAME', {encoding: 'utf8'}).trim().split('\n')[0]);
 
 // generate a random key which is announce to the server
-app.set('SECRETKEY', crypto.randomBytes(30).toString('hex'));
+app.set('SECRETKEY', crypto.randomBytes(16).toString('hex'));
 
 // tell the user which IPs we have
 var ips = getIps();
@@ -40,7 +42,8 @@ ips.forEach(function (ip) {
 
 // announce ourselves to the server
 setInterval(announcePrinter, 20000);
-announcePrinter();
+setTimeout(announcePrinter, 0);
+setTimeout(announcePrinter, 5000);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -98,23 +101,25 @@ module.exports = app;
 function announcePrinter() {
     console.log('announcing ticketprinter', app.get('PRINTERNAME'));
 
-    var req = http.request({
-        host: 'blindernuka.no',
-        port: 80,
-        path: '/billett/api/printer/announce',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-
-    req.write(JSON.stringify({
+    var data = JSON.stringify({
         name: app.get('PRINTERNAME'),
         ips: getIps(),
         port: app.get('port'),
         key: app.get('SECRETKEY')
-    }));
+    });
 
+    var req = (isDev ? https : http).request({
+        host: isDev ? 'billett.uka.athene.foreningenbs.no' : 'blindernuka.no',
+        port: isDev ? 443 : 80,
+        rejectUnauthorized: false,
+        path: '/billett/api/printer/announce',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+
+    req.write(data);
     req.on('error', function (e) {
         console.log("problem with announcing ticketprinter: ", e.message);
     });
@@ -138,3 +143,4 @@ function getIps() {
 
     return res;
 }
+
