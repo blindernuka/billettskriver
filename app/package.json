@@ -12,7 +12,8 @@
     "express": "~4.11.0",
     "jade": "~1.9.0",
     "morgan": "~1.5.1",
-    "serve-favicon": "~2.2.0"
+    "serve-favicon": "~2.2.0",
+    "multer": "~0.1.7"
   },
   "author": "Henrik Steen <henrist@henrist.net>",
   "license": "MIT"

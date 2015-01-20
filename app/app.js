@@ -4,11 +4,39 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var multer = require('multer');
+var os = require('os');
+var http = require('http');
+var fs = require('fs');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var print = require('./routes/print');
 
 var app = express();
+
+// make sure we known our name
+if (!fs.existsSync('PRINTERNAME')) {
+    console.error('Missing file PRINTERNAME with an identifier for this printer.');
+    process.exit(1);
+}
+
+app.set('PRINTERNAME', fs.readFileSync('PRINTERNAME', {encoding: 'utf8'}).trim().split('\n')[0]);
+
+// tell the user which IPs we have
+var ips = getIps();
+if (ips.length == 0) {
+    console.error('No IPs are known for this instance!');
+    process.exit(1);
+}
+
+console.log("Ticketprinter %s running on:", app.get('PRINTERNAME'));
+ips.forEach(function (ip) {
+    console.log("ip: %s", ip);
+});
+
+// announce ourselves to the server
+setInterval(announcePrinter, 30000);
+announcePrinter();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,8 +50,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(multer({
+    dest: './uploads/'
+}));
+
 app.use('/', routes);
-app.use('/users', users);
+app.use('/print', print);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -58,3 +90,45 @@ app.use(function(err, req, res, next) {
 
 
 module.exports = app;
+
+function announcePrinter() {
+    console.log('announcing ticketprinter', app.get('PRINTERNAME'));
+
+    var req = http.request({
+        host: 'blindernuka.no',
+        port: 80,
+        path: '/billett/api/printer/announce',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    req.write(JSON.stringify({
+        name: app.get('PRINTERNAME'),
+        ips: getIps()
+    }));
+
+    req.on('error', function (e) {
+        console.log("problem with announcing ticketprinter: ", e.message);
+    });
+
+    req.end();
+}
+
+function getIps() {
+    var res = [];
+
+    var ifaces = os.networkInterfaces();
+    Object.keys(ifaces).forEach(function (ifname) {
+        ifaces[ifname].forEach(function (iface) {
+            if (iface.internal !== false) {
+                return;
+            }
+
+            res.push(iface.address);
+        });
+    });
+
+    return res;
+}
