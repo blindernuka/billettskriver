@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var os = require('os');
+var http = require('http');
 var https = require('https');
 var fs = require('fs');
 var crypto = require('crypto');
@@ -116,6 +117,7 @@ function announcePrinter() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(data, 'utf8')
         }
     });
 
