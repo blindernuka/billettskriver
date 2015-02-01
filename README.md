@@ -29,6 +29,8 @@ Installer driver for skriveren:
 
 Sett opp printeren i CUPS. Den må ha navn `SEWOO_LKT_Series`.
 
+Ved problemer, sjekk at printeren blir identifisert når den blir koblet til ved å se etter `Product: POS PRINTER` i `$ dmesg`. Prøv evt. en annen USB-port hvis den ikke dukker opp.
+
 Installer NodeJS og nødvendige globale pakker:
 * Finn ut fil for siste versjon for 'arm-pi' fra http://nodejs.org/dist/
 ```
@@ -43,8 +45,8 @@ $ npm install -g forever
 
 Vi bruker OpenVPN for å sikre at man kan koble seg til systemet dersom det er på en LAN.
 * Installer OpenVPN: `$ sudo apt-get install openvpn`
-* Hent ned config filer fra en annen klient
-* Legg til følgende et passende sted i `/etc/ifplugd/action.d/action_wpa´
+* Hent ned config filer fra en annen klient (se mappen `/etc/openvpn/`)
+* Legg til følgende et passende sted (etter `IFPLUGD_IFACE` blir definert) i `/etc/ifplugd/action.d/action_wpa´
 ```
 # skip openvpn interface
 if [ "${IFPLUGD_IFACE}" = "tun0" ]; then
@@ -62,7 +64,8 @@ $ echo 'bytt-meg-ut' >PRINTERNAME
 
 ### Kjøring i testmodus
 ```
-$ npm start
+$ npm start                      # kjører i utviklermodus mot billett.uka.athene.foreningenbs.no
+$ NODE_ENV=production npm start  # kjører i produksjonsmodus mot blindernuka.no
 ```
 
 ### Kjøring ved oppstart
@@ -70,7 +73,7 @@ $ npm start
 $ crontab -u pi -e
 ```
 
-add
+Legg til
 
 ```
 @reboot /home/pi/billettskriver/runapp.sh
