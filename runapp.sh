@@ -1,4 +1,4 @@
 cd /home/pi/billettskriver/app
 
-PATH=$PATH:/opt/node/bin
-/usr/local/bin/forever start bin/www >>mylog 2>&1
+PATH=$PATH:/usr/local/bin
+NODE_ENV=production /usr/local/bin/forever start bin/www >>mylog 2>&1
